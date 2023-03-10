@@ -24,11 +24,13 @@ find_package(pcl_conversions REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(rclcpp_action REQUIRED)
-find_package(rosidl_typesupport_c REQUIRED) 
+find_package(rosidl_typesupport_c REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(image_transport REQUIRED)
+find_package(rclcpp_components REQUIRED)
 # install(FILES DESTINATION share/${PROJECT_NAME})
 # ament_export_dependencies(rosidl_default_runtime)
 # ament_export_dependencies(rosidl_default_runtime)
@@ -40,7 +42,7 @@ find_package(sensor_msgs REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/PandarPacket.msg"
   "msg/PandarScan.msg"
-  DEPENDENCIES builtin_interfaces 
+  DEPENDENCIES builtin_interfaces
 )
 find_package(PCL REQUIRED COMPONENTS io)
 ament_export_dependencies(rosidl_default_runtime)
@@ -83,7 +85,7 @@ target_include_directories(PandarGeneralSDK PRIVATE
     # ${YAML_CPP_INCLUDE_DIRS}
 )
 
-target_link_libraries(PandarGeneralSDK 
+target_link_libraries(PandarGeneralSDK
     PandarGeneral
     ${Boost_LIBRARIES}
     ${PCL_IO_LIBRARIES}
@@ -109,6 +111,8 @@ ament_target_dependencies(hesai_lidar_node
   "std_msgs"
   "tf2_geometry_msgs"
   "tf2_ros"
+  "image_transport"
+  "rclcpp_components"
 )
 
 target_include_directories(hesai_lidar_node PRIVATE
@@ -119,10 +123,8 @@ target_include_directories(hesai_lidar_node PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
   )
-  
-    
 
-target_link_libraries(hesai_lidar_node 
+target_link_libraries(hesai_lidar_node
     ${PCL_IO_LIBRARIES}
     ${Boost_SYSTEM_LIBRARY}
     PandarGeneralSDK
@@ -136,11 +138,11 @@ install(TARGETS PandarGeneralSDK
 
 install(TARGETS hesai_lidar_node
   DESTINATION lib/${PROJECT_NAME})
-  
+
 install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME})
 
-  install(DIRECTORY config
+install(DIRECTORY config
   DESTINATION share/${PROJECT_NAME})
 
 ament_export_include_directories(include)

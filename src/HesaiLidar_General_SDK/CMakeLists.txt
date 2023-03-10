@@ -5,8 +5,7 @@ find_package( Boost REQUIRED  COMPONENTS thread)
 find_package( PCL REQUIRED COMPONENTS common )
 
 # set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
-ADD_COMPILE_OPTIONS(-std=c++11 )
-ADD_COMPILE_OPTIONS(-std=c++14 )
+ADD_COMPILE_OPTIONS(-std=c++17 )
 
 add_subdirectory(src/PandarGeneralRaw)
 
@@ -24,7 +23,7 @@ add_library( ${PROJECT_NAME} SHARED
     src/util.c
 )
 
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(${PROJECT_NAME}
     PandarGeneral
     ${Boost_LIBRARIES}
     ${PCL_IO_LIBRARIES}
@@ -44,4 +43,3 @@ target_link_libraries(${PROJECT_NAME}
 #         Boost::thread
 #     )
 # endif(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-
