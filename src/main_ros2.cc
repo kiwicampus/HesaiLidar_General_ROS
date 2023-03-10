@@ -2,7 +2,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <hesai_lidar/msg/pandar_scan.hpp>
 #include <hesai_lidar/msg/pandar_packet.hpp>
-#include <image_transport/image_transport.h>
+#include <image_transport/image_transport.hpp>
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
@@ -13,7 +13,7 @@
 #include <string>
 #include <functional>
 #include "std_msgs/msg/string.hpp"
-// #define PRINT_FLAG 
+// #define PRINT_FLAG
 
 using namespace std;
 namespace hesai_lidar
@@ -22,7 +22,7 @@ class HesaiLidarClient: public rclcpp::Node
 {
 public:
   HesaiLidarClient():Node("hesai_lidar")
-  { 
+  {
     this->declare_parameter<std::string>("pcap_file", "");
     this->declare_parameter<std::string>("server_ip", "");
     this->declare_parameter<int>("lidar_recv_port", 2368);
@@ -39,7 +39,7 @@ public:
     this->declare_parameter<bool>("coordinate_correction_flag", false);
     this->declare_parameter<std::string>("target_frame", "");
     this->declare_parameter<std::string>("fixed_frame", "");
-    rclcpp::QoS qos(rclcpp::KeepLast(7)); 
+    rclcpp::QoS qos(rclcpp::KeepLast(7));
     auto sensor_qos = rclcpp::QoS(rclcpp::SensorDataQoS());
     lidarPublisher = this->create_publisher<sensor_msgs::msg::PointCloud2>("pandar", sensor_qos);
     packetPublisher = this->create_publisher<hesai_lidar::msg::PandarScan>("pandar_packets", qos);
@@ -60,7 +60,7 @@ private:
 #ifdef PRINT_FLAG
         std::cout.setf(ios::fixed);
         std::cout << "timestamp: " << std::setprecision(10) << timestamp << ", point size: " << cld->points.size() << std::endl;
-#endif        
+#endif
     }
     if(m_sPublishType == "both" || m_sPublishType == "raw"){
       packetPublisher->publish(*scan);
@@ -73,7 +73,7 @@ private:
   void gpsCallback(int timestamp) {
 #ifdef PRINT_FLAG
       std::cout << "gps: " << timestamp << std::endl;
-#endif      
+#endif
   }
 
   void scanCallback(const hesai_lidar::msg::PandarScan::SharedPtr scan)
@@ -116,9 +116,9 @@ private:
     this->get_parameter("target_frame", targetFrame);
     this->get_parameter("fixed_frame", fixedFrame);
     this->get_parameter("background_b", targetFrame);
-  
+
     if(!pcapFile.empty()){
-      hsdk = new PandarGeneralSDK(pcapFile, boost::bind(&HesaiLidarClient::lidarCallback, this, _1, _2, _3), \
+      hsdk = new PandarGeneralSDK(pcapFile, boost::bind(&HesaiLidarClient::lidarCallback, this, boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3), \
       static_cast<int>(startAngle * 100 + 0.5), 0, pclDataType, lidarType, frameId, m_sTimestampType, lidarCorrectionFile, \
       coordinateCorrectionFlag, targetFrame, fixedFrame);
       if (hsdk != NULL) {
@@ -147,7 +147,7 @@ private:
       }
     }
     else if ("rosbag" == dataType){
-      hsdk = new PandarGeneralSDK("", boost::bind(&HesaiLidarClient::lidarCallback, this, _1, _2, _3), \
+      hsdk = new PandarGeneralSDK("", boost::bind(&HesaiLidarClient::lidarCallback, this, boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3), \
       static_cast<int>(startAngle * 100 + 0.5), 0, pclDataType, lidarType, frameId, m_sTimestampType, \
       lidarCorrectionFile, coordinateCorrectionFlag, targetFrame, fixedFrame);
       if (hsdk != NULL) {
@@ -156,11 +156,11 @@ private:
     }
     else {
       hsdk = new PandarGeneralSDK(serverIp, lidarRecvPort, gpsPort, \
-        boost::bind(&HesaiLidarClient::lidarCallback, this, _1, _2, _3), \
-        boost::bind(&HesaiLidarClient::gpsCallback, this, _1), static_cast<int>(startAngle * 100 + 0.5), 0, pclDataType, lidarType, frameId,\
+        boost::bind(&HesaiLidarClient::lidarCallback, this, boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3), \
+        boost::bind(&HesaiLidarClient::gpsCallback, this, boost::placeholders::_1), static_cast<int>(startAngle * 100 + 0.5), 0, pclDataType, lidarType, frameId,\
          m_sTimestampType, lidarCorrectionFile, multicastIp, coordinateCorrectionFlag, targetFrame, fixedFrame);
     }
-    
+
     if (hsdk != NULL) {
         hsdk->Start();
         // hsdk->LoadLidarCorrectionFile("...");  // parameter is stream in lidarCorrectionFile

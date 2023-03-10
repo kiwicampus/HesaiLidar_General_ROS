@@ -20,8 +20,6 @@
 #include "src/pandarGeneral_internal.h"
 #include "log.h"
 #include <sched.h>
-#include <tf2_ros/transform_listener.h>
-// #include <geometry_msgs/TransformStamped.h>
 #include <algorithm>
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -160,7 +158,7 @@ PandarGeneral_Internal::PandarGeneral_Internal(std::string pcap_path, \
   gps_callback_ = NULL;
   last_azimuth_ = 0;
   m_sLidarType = lidar_type;
-   m_sSensorFrame = frame_id;
+  m_sSensorFrame = frame_id;
   m_sFixedFrame = fixed_frame;
   m_sTargetFrame = target_frame;
   if (!m_sTargetFrame.empty())
@@ -232,7 +230,6 @@ void PandarGeneral_Internal::Init() {
       m_sin_azimuth_map_b[i] = sinf(i * M_PI / 18000) * HS_LIDAR_XT_COORDINATE_CORRECTION_B;
       m_cos_azimuth_map_b[i] = cosf(i * M_PI / 18000) * HS_LIDAR_XT_COORDINATE_CORRECTION_B;
     }
-      
   }
   if (pcl_type_) {
     for (int i = 0; i < MAX_LASER_NUM; i++) {
@@ -686,7 +683,7 @@ int PandarGeneral_Internal::Start() {
     lidar_recv_thr_ =
         new boost::thread(boost::bind(&PandarGeneral_Internal::RecvTask, this));
   } else {
-    pcap_reader_->start(boost::bind(&PandarGeneral_Internal::FillPacket, this, _1, _2, _3));
+    pcap_reader_->start(boost::bind(&PandarGeneral_Internal::FillPacket, this, boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3));
   }
   return 0;
 }

@@ -34,9 +34,6 @@
 #include "src/pcap_reader.h"
 #include <hesai_lidar/msg/pandar_scan.hpp>
 #include <hesai_lidar/msg/pandar_packet.hpp>
-#include <tf2_ros/transform_listener.h>
-#include <tf2_ros/buffer.h>
-// #include <geometry_msgs/TransformStamped.h>
 #include <Eigen/Dense>
 
 #define SOB_ANGLE_SIZE (4)
@@ -481,8 +478,6 @@ class PandarGeneral_Internal {
   std::string correction_file_path_;
   PacketsBuffer m_PacketsBuffer;
   bool m_bCoordinateCorrectionFlag;
-  std::shared_ptr<tf2_ros::TransformListener> m_tf_listener;
-  std::shared_ptr<tf2_ros::Buffer> m_tf_buffer;
   Eigen::Affine3f m_tf_matrix_to_fixed;
   Eigen::Affine3f m_tf_matrix_to_target;
   std::string m_sSensorFrame;
