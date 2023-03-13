@@ -29,6 +29,10 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(image_transport REQUIRED)
+find_package(rclcpp_components REQUIRED)
+
+
 # install(FILES DESTINATION share/${PROJECT_NAME})
 # ament_export_dependencies(rosidl_default_runtime)
 # ament_export_dependencies(rosidl_default_runtime)
@@ -51,6 +55,11 @@ add_library(PandarGeneral
     src/HesaiLidar_General_SDK/src/PandarGeneralRaw/src/pcap_reader.cpp
     src/HesaiLidar_General_SDK/src/PandarGeneralRaw/src/pandarGeneral.cc
 )
+
+ament_target_dependencies(PandarGeneral 
+  "tf2_ros"
+)
+
 target_include_directories(PandarGeneral PRIVATE
     src/HesaiLidar_General_SDK/src/PandarGeneralRaw/include
     src/HesaiLidar_General_SDK/src/PandarGeneralRaw/
@@ -109,6 +118,8 @@ ament_target_dependencies(hesai_lidar_node
   "std_msgs"
   "tf2_geometry_msgs"
   "tf2_ros"
+  "image_transport"
+  "rclcpp_components"
 )
 
 target_include_directories(hesai_lidar_node PRIVATE
