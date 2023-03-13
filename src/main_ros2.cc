@@ -15,6 +15,10 @@
 #include "std_msgs/msg/string.hpp"
 // #define PRINT_FLAG 
 
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
 using namespace std;
 namespace hesai_lidar
 {
@@ -118,7 +122,7 @@ private:
     this->get_parameter("background_b", targetFrame);
   
     if(!pcapFile.empty()){
-      hsdk = new PandarGeneralSDK(pcapFile, boost::bind(&HesaiLidarClient::lidarCallback, this, _1, _2, _3), \
+      hsdk = new PandarGeneralSDK(pcapFile, std::bind(&HesaiLidarClient::lidarCallback, this, _1, _2, _3), \
       static_cast<int>(startAngle * 100 + 0.5), 0, pclDataType, lidarType, frameId, m_sTimestampType, lidarCorrectionFile, \
       coordinateCorrectionFlag, targetFrame, fixedFrame);
       if (hsdk != NULL) {
@@ -147,7 +151,7 @@ private:
       }
     }
     else if ("rosbag" == dataType){
-      hsdk = new PandarGeneralSDK("", boost::bind(&HesaiLidarClient::lidarCallback, this, _1, _2, _3), \
+      hsdk = new PandarGeneralSDK("", std::bind(&HesaiLidarClient::lidarCallback, this, _1, _2, _3), \
       static_cast<int>(startAngle * 100 + 0.5), 0, pclDataType, lidarType, frameId, m_sTimestampType, \
       lidarCorrectionFile, coordinateCorrectionFlag, targetFrame, fixedFrame);
       if (hsdk != NULL) {
@@ -156,8 +160,8 @@ private:
     }
     else {
       hsdk = new PandarGeneralSDK(serverIp, lidarRecvPort, gpsPort, \
-        boost::bind(&HesaiLidarClient::lidarCallback, this, _1, _2, _3), \
-        boost::bind(&HesaiLidarClient::gpsCallback, this, _1), static_cast<int>(startAngle * 100 + 0.5), 0, pclDataType, lidarType, frameId,\
+        std::bind(&HesaiLidarClient::lidarCallback, this, _1, _2, _3), \
+        std::bind(&HesaiLidarClient::gpsCallback, this, _1), static_cast<int>(startAngle * 100 + 0.5), 0, pclDataType, lidarType, frameId,\
          m_sTimestampType, lidarCorrectionFile, multicastIp, coordinateCorrectionFlag, targetFrame, fixedFrame);
     }
     

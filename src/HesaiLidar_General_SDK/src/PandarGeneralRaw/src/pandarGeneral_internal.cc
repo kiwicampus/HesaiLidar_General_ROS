@@ -680,13 +680,13 @@ int PandarGeneral_Internal::Start() {
   enable_lidar_recv_thr_ = true;
   enable_lidar_process_thr_ = true;
   lidar_process_thr_ = new boost::thread(
-      boost::bind(&PandarGeneral_Internal::ProcessLiarPacket, this));
+      std::bind(&PandarGeneral_Internal::ProcessLiarPacket, this));
 
   if (connect_lidar_) {
     lidar_recv_thr_ =
-        new boost::thread(boost::bind(&PandarGeneral_Internal::RecvTask, this));
+        new boost::thread(std::bind(&PandarGeneral_Internal::RecvTask, this));
   } else {
-    pcap_reader_->start(boost::bind(&PandarGeneral_Internal::FillPacket, this, _1, _2, _3));
+    pcap_reader_->start(std::bind(&PandarGeneral_Internal::FillPacket, this, _1, _2, _3));
   }
   return 0;
 }

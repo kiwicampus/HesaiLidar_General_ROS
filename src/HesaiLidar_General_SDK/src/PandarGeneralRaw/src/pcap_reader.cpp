@@ -50,7 +50,7 @@ void PcapReader::start(boost::function<void(const uint8_t*, const int, double ti
   this->callback = callback;
   loop           = true;
 
-  parse_thr_ = new boost::thread(boost::bind(&PcapReader::parsePcap, this));
+  parse_thr_ = new boost::thread(std::bind(&PcapReader::parsePcap, this));
 }
 
 void PcapReader::stop() {
